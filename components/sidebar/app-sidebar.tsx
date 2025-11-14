@@ -79,7 +79,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <Image
                   src={Logo}
                   alt ="Logo"
-                  className="size-6"
+                  className="size-4"
                 />
                 <span className="text-base font-semibold">KammLMS.</span>
               </Link>
