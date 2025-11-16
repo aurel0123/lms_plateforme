@@ -10,20 +10,18 @@ export const env = createEnv({
     AUTH_GITHUB_CLIENT_SECRET: z.string().min(1),
     RESEND_API_KEY: z.string().min(1), 
     ARCJET_KEY : z.string().min(1),
+    AWS_ACCESS_KEY_ID : z.string().min(1), 
+    AWS_SECRET_ACCESS_KEY:  z.string().min(1), 
+    AWS_ENDPOINT_URL_S3:  z.url(),
+    AWS_ENDPOINT_URL_IAM: z.url(),
+    AWS_REGION: z.string().min(1),
   },
 
   client: {
-    // tu peux définir ici tes variables publiques (commençant par NEXT_PUBLIC_)
+    NEXT_PUBLIC_S3_BUCKET_NAME_IMAGES: z.string().min(1),
   },
 
-  // 🧩 Voici la partie manquante :
   experimental__runtimeEnv: {
-    DATABASE_URL: process.env.DATABASE_URL,
-    BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
-    BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
-    AUTH_GITHUB_CLIENT_ID: process.env.AUTH_GITHUB_CLIENT_ID,
-    AUTH_GITHUB_CLIENT_SECRET: process.env.AUTH_GITHUB_CLIENT_SECRET,
-    RESEND_API_KEY: process.env.RESEND_API_KEY , 
-    ARCJET_KEY : process.env.ARCJET_KEY
+    NEXT_PUBLIC_S3_BUCKET_NAME_IMAGES: process.env.NEXT_PUBLIC_S3_BUCKET_NAME_IMAGES,
   },
 });

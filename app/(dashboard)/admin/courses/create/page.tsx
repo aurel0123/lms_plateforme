@@ -40,6 +40,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import RichTextEditor from "@/components/rich-text-editor/Editor";
+import Uploader from "@/components/file-uploader/Uploader";
 export default function CourseCreationPage() {
   const form = useForm<courseSchemaType>({
     resolver: zodResolver(courseSchema),
@@ -104,7 +105,7 @@ export default function CourseCreationPage() {
                   name="slug"
                   render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel>Titre</FormLabel>
+                      <FormLabel>Slug</FormLabel>
                       <FormControl>
                         <Input placeholder="slug" {...field} />
                       </FormControl>
@@ -114,7 +115,7 @@ export default function CourseCreationPage() {
                 />
                 <Button
                   type="button"
-                  className="w-fit"
+                  className="w-fit "
                   onClick={() => {
                     const titleValue = form.getValues("title");
                     const slug = slugify(titleValue);
@@ -162,7 +163,8 @@ export default function CourseCreationPage() {
                   <FormItem className="w-full">
                     <FormLabel>Image de couverture</FormLabel>
                     <FormControl>
-                      <Input placeholder="image de couverture" {...field} />
+                      <Uploader  value={field.value} onChange={field.onChange}/>
+                      {/* <Input placeholder="image de couverture" {...field} /> */}
                     </FormControl>
                     <FormMessage />
                   </FormItem>

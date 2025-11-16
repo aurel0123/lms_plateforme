@@ -1,11 +1,11 @@
-"use client";
+export const dynamic = "force-dynamic";
+
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
-import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChevronLast } from "@/components/animationIcon/ChevronLast";
+import { ArrowRightIcon } from "@/components/ui/arrow-right";
+
 
 interface featureProps {
   title: string;
@@ -65,7 +65,7 @@ export default function Home() {
                 variant: "outline",
               })}
             >
-              Se connecter <ChevronLast/>
+              Se connecter <ArrowRightIcon/>
             </Link>
           </div>
         </div>

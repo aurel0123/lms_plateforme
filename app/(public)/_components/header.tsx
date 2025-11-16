@@ -29,8 +29,8 @@ export default function Header() {
                 <Image
                     src={Logo}
                     alt='logo'
-                    width={40}
-                    height={40}
+                    width={32}
+                    height={32}
                 />
                 <span className='font-outfit font-bold '>
                     KammLMS.
@@ -55,8 +55,15 @@ export default function Header() {
                         isPending ? null : session ? (
                             <UserDropDown
                                 email = {session.user.email}
-                                image = {session.user.image || ""}
-                                name = {session.user.name}
+                                image = {
+                                    session?.user.image ??
+                                    `https://avatar.vercel.sh/${session?.user.email}`
+                                }
+                                name = {
+                                    session?.user.name && session.user.name.length > 0
+                                        ? session.user.name.charAt(0).toUpperCase()
+                                        : session?.user.email.split('@')[0]
+                                }
                             />
                         ): (
                             <>

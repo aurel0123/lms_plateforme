@@ -59,7 +59,7 @@ const ChevronLast = ({
           transition={defaultTransition}
           animate={controls}
           initial="normal"
-          d="m7 18 6-6-6-6"
+          d="m11 6 6 6-6 6"   // chevron vers la droite
         />
         <motion.path
           variants={{
@@ -69,7 +69,7 @@ const ChevronLast = ({
           transition={defaultTransition}
           animate={controls}
           initial="normal"
-          d="M17 6v12"
+          d="M7 6v12" 
         />
       </svg>
     </div>
