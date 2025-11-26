@@ -78,7 +78,7 @@ export default function RichTextEditor({field} : {field : any }) {
     onUpdate : ({editor}) => {
       field.onChange(JSON.stringify(editor.getJSON())) ; 
     },
-    content : field.Value ? JSON.parse(field.Value) : '<p>Hello world </p>'
+    content : field.value ? JSON.parse(field.value) : '<p>Hello world </p>'
   })
 
   return (

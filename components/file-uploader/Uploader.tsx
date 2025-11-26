@@ -11,6 +11,7 @@ import RenderState, {
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
+import { useContruct } from "@/hooks/use-contruct";
 
 interface UploadProps {
   id: string | null;
@@ -29,6 +30,7 @@ interface iAppProps{
   onChange? : (value:string) => void;
 }
 export default function Uploader({onChange , value} : iAppProps) {
+  const fileUrl = useContruct(value || ''); 
   const [fileState, setFileState] = useState<UploadProps>({
     error: false,
     id: null,
@@ -37,7 +39,8 @@ export default function Uploader({onChange , value} : iAppProps) {
     isDeleting: false,
     uploading: false,
     typeImage: "image",
-    key:value
+    key:value, 
+    objectUrl: fileUrl,
   });
 
   async function UploadFile(file: File) {

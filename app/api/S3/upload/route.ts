@@ -7,6 +7,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { env } from '@/lib/env';
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { client } from '@/lib/S3Client';
+import arcjet, { detectBot, fixedWindow } from '@/lib/arcjet';
+import { RequireAdmin } from '@/app/data/admin/require-admin';
 
 
 export const fileUploadSchema = z.object({
@@ -16,8 +18,27 @@ export const fileUploadSchema = z.object({
     isImage: z.boolean()
 })
 
+const aj = arcjet
+    .withRule(
+        detectBot({
+            mode: "LIVE", // will block requests. Use "DRY_RUN" to log only
+            allow: [], // "allow none" will block all detected bots
+        }),
+    )
+    .withRule(
+        fixedWindow({
+            mode : "LIVE",
+            max: 10,
+            window: "1m",
+        })
+    )
 export async function POST(request : Request){
+    const session = await RequireAdmin();
     try {
+        const decision = await aj.protect(request, {fingerprint: session?.user.id as string});
+        if (decision.isDenied()){
+            return NextResponse.json({error : "dudde not god"} , {status : 429})
+        }
         const body = await  request.json(); 
         const validate = fileUploadSchema.safeParse(body)
         if(!validate.success){

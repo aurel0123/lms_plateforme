@@ -21,7 +21,7 @@ const navigationItems = [
     }
 ]
 export default function Header() {
-    const {data : session , isPending} =authClient.useSession() ; 
+    const {data : session , isPending} = authClient.useSession() ; 
   return (
     <header className='sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-md'>
         <div className='container min-h-16 mx-auto  flex items-center px-4 md:px-6 lg:px-8'>

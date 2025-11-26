@@ -27,7 +27,7 @@ export default function LoginForm() {
   }
   async function signInEmail() {
     startEmailTransition(async () => {
-      await authClient.emailOtp.sendVerificationOtp({
+      await authClient.sendVerificationOtp({
         email: email,
         type: "sign-in", // required
         fetchOptions: {

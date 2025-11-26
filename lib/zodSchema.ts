@@ -64,7 +64,7 @@ export const courseSchema = z.object({
   smalldescription: z
     .string()
     .min(3, { message: "La courte description doit contenir au moins 3 caractères." })
-    .max(200, { message: "La courte description ne peut pas dépasser 200 caractères." }),
+    .max(1000, { message: "La courte description ne peut pas dépasser 200 caractères." }),
 
   slug: z
     .string()

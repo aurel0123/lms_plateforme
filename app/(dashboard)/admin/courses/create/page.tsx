@@ -1,8 +1,8 @@
 "use client";
 import { buttonVariants, Button } from "@/components/ui/button";
-import { ArrowLeft, Plus, Sparkles } from "lucide-react";
+import { ArrowLeft, Loader, Plus, Sparkles } from "lucide-react";
 import Link from "next/link";
-import React from "react";
+import React, { useTransition } from "react";
 import {
   Card,
   CardContent,
@@ -41,6 +41,10 @@ import {
 } from "@/components/ui/select";
 import RichTextEditor from "@/components/rich-text-editor/Editor";
 import Uploader from "@/components/file-uploader/Uploader";
+import { CreateCourse } from "./action";
+import { tryCatch } from "@/lib/tryCatch";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 export default function CourseCreationPage() {
   const form = useForm<courseSchemaType>({
     resolver: zodResolver(courseSchema),
@@ -58,8 +62,25 @@ export default function CourseCreationPage() {
     },
   });
 
+  const [isPending , startTransition] = useTransition(); 
+  const router = useRouter(); 
   function onSubmit(values: courseSchemaType) {
-    console.log(values);
+    startTransition(async () => {
+      const {data : result , error} = await tryCatch(CreateCourse(values)); 
+
+      if(error){
+        toast.error("Please try again");
+        return ; 
+      }
+
+      if(result.status ==="success"){
+        toast.success(result.message);
+        form.reset();
+        router.push("/admin/courses/");
+      }else if (result.status === "error") {
+        toast.error(result.message);
+      }
+    })
   }
 
   return (
@@ -283,8 +304,20 @@ export default function CourseCreationPage() {
                   </FormItem>
                 )}
               />
-              <Button type="submit">
-                <Plus /> Créer le cour
+              <Button type="submit" disabled={isPending}>
+              {
+                isPending ? (
+                  <>
+                    <Loader className="size-4 animate-spin"/>
+                    Chargement...
+                  </>
+                ) : (
+                  <>
+                    <Plus /> Créer le cour
+                  </>
+                )
+              }
+                
               </Button>
             </form>
           </Form>
