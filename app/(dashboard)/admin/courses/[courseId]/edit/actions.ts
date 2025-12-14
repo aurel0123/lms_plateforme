@@ -6,6 +6,7 @@ import { prisma } from "@/lib/db";
 import { ApiResponse } from "@/lib/type";
 import { courseSchema, courseSchemaType } from "@/lib/zodSchema";
 import { request } from "@arcjet/next";
+import { revalidatePath } from "next/cache";
 
 const aj = arcjet
   .withRule(
@@ -73,6 +74,93 @@ export async function editCourse(
     return {
       status: "error",
       message: "Erreur lors de la mise à jour du cours",
+    };
+  }
+}
+
+export async function reorderLessons(
+  chpaterId: string,
+  lessons: {
+    id: string;
+    position: number;
+  }[],
+  courseId: string,
+) : Promise<ApiResponse>{
+  await RequireAdmin();
+  try {
+    if(!lessons || lessons.length === 0){
+      return {
+        status: "error",
+        message: "Aucune leçon fournie",
+      };
+    }
+
+    const updates = lessons.map((lesson) => 
+        prisma.lesson.update({
+        where : {
+          id : lesson.id, 
+          chapterId : chpaterId,
+        },
+        data : {
+          position : lesson.position,
+        }
+      })
+    );
+
+    await prisma.$transaction(updates);
+    revalidatePath(`/admin/courses/${courseId}/edit`);
+
+    return {
+      status: "success",
+      message: "Leçons réorganisées avec succès",
+    };
+  } catch {
+    return {
+      status: "error",
+      message: "Erreur lors de la réorganisation des leçons",
+    };
+  }
+}
+
+export async function reorderChapters(
+  courseId: string,
+  chapters: {
+    id: string;
+    position: number;
+  }[],
+) :Promise<ApiResponse>{
+  await RequireAdmin();
+  try {
+    if(!chapters || chapters.length === 0){
+      return {
+        status: "error",
+        message: "Aucun chapitre fourni",
+      };
+    }
+
+    const updates = chapters.map((chapter) => 
+        prisma.chapter.update({
+        where : {
+          id : chapter.id, 
+          courseId : courseId,
+        },
+        data : {
+          position : chapter.position,
+        }
+      })
+    );
+
+    await prisma.$transaction(updates);
+    revalidatePath(`/admin/courses/${courseId}/edit`);
+
+    return {
+      status: "success",
+      message: "Chapitres réorganisés avec succès",
+    };
+  } catch {
+    return {
+      status: "error",
+      message: "Erreur lors de la réorganisation des chapitres",
     };
   }
 }
