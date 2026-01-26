@@ -75,4 +75,33 @@ export const courseSchema = z.object({
   })
 });
 
+export const chapterSchema = z.object({
+  title: z
+    .string()
+    .min(3, {message : "Le tritre du chapitre doit avoir au moins 03 carctères"}),
+  courseId : z.string({message : "Id du cour invalid"})
+})
+
+export const lessonSchema = z.object({
+  title : z
+    .string()
+    .min(3, {message : "Le tritre du chapitre doit avoir au moins 03 carctères"}),
+  description : z
+    .string()
+    .min(3, { message: "La description doit être plus détaillée (minimum 3 caractères)." })
+    .optional(),
+  thumbnailkey : z
+    .string()
+    .min(1, { message: "Le fichier est obligatoire." })
+    .optional(),
+  videoUrl : z
+    .string()
+    .min(1, { message: "Le fichier est obligatoire." })
+    .optional(),
+  chapterId : z.string({message : "Id du chapitre invalid"}),
+  courseId : z.string({message : "id du cours invalid"})
+})
+
 export type courseSchemaType = z.infer<typeof courseSchema>; 
+export type chapterSchemaType = z.infer<typeof chapterSchema>; 
+export type lessonSchemaType = z.infer<typeof lessonSchema>;

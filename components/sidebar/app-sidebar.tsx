@@ -22,12 +22,12 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "/admin/",
+      url: "/dashboard/",
       icon: LayoutDashboard,
     },
     {
       title: "Cours",
-      url: "/admin/courses",
+      url: "/dashboard/courses",
       icon: LayoutList,
     },
     {

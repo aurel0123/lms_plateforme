@@ -30,7 +30,7 @@ interface iAppProps{
   onChange? : (value:string) => void;
 }
 export default function Uploader({onChange , value} : iAppProps) {
-  const fileUrl = useContruct(value || ''); 
+  const fileUrl = value ? useContruct(value) : undefined ; 
   const [fileState, setFileState] = useState<UploadProps>({
     error: false,
     id: null,
