@@ -119,7 +119,7 @@ model Chapter{
   id        String   @id @default(uuid())
   title     String
   position  Int
-  course    Course   @relation(fields: [courseId], references: [id])
+  course    Course   @relation(fields: [courseId], references: [id] , onDelete : Cascade)
   courseId  String
 
   lessons   Lesson[]

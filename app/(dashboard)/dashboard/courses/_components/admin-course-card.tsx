@@ -21,6 +21,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface iAppCourseProps {
   data: AdminCoursesType;
@@ -98,6 +99,36 @@ export default function AdminCourseCard({ data }: iAppCourseProps) {
         >
           Modifier le cour <ArrowRight className=" size-4 ml-2" />
         </Link>
+      </CardContent>
+    </Card>
+  );
+}
+
+export function AdminCourseCardSkelton() {
+  return (
+    <Card className="group relative py-0 gap-0">
+      <div className="absolute top-2 right-2 z-10 flex items-center gap-2">
+        <Skeleton className="size-8 rounded-md" />
+      </div>
+
+      <div className="relative w-full h-fit">
+        <Skeleton className="h-[250] aspect-video w-full rounded-t-lg object-cover" />
+      </div>
+
+      <CardContent className="p-4">
+        <Skeleton className="h-6 w-3/4 mb-2 rounded"/>
+        <Skeleton className="h-4 w-full mb-4 rounded"/>
+        <div className="mt-4 flex items-center gap-x-5">
+          <div className="flex items-center gap-x-5">
+            <Skeleton className="size-8 rounded-md"/>
+            <Skeleton className="h-4 rounded w-10"/>
+          </div>
+          <div className="flex items-center gap-x-5">
+            <Skeleton className="size-8 rounded-md"/>
+            <Skeleton className="h-4 rounded w-10"/>
+          </div>
+        </div>
+        <Skeleton className="mt-4 h-10 w-full rounded"/>
       </CardContent>
     </Card>
   );
