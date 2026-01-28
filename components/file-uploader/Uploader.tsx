@@ -25,12 +25,17 @@ interface UploadProps {
   typeImage: "image" | "video";
 }
 
-interface iAppProps{
-  value? : string ;
-  onChange? : (value:string) => void;
+interface iAppProps {
+  value?: string;
+  onChange?: (value: string) => void;
+  fileTypeAccpted?: "image" | "video";
 }
-export default function Uploader({onChange , value} : iAppProps) {
-  const fileUrl = value ? useContruct(value) : undefined ; 
+export default function Uploader({
+  onChange,
+  value,
+  fileTypeAccpted = "image",
+}: iAppProps) {
+  const fileUrl = useContruct(value || "");
   const [fileState, setFileState] = useState<UploadProps>({
     error: false,
     id: null,
@@ -38,70 +43,72 @@ export default function Uploader({onChange , value} : iAppProps) {
     progress: 0,
     isDeleting: false,
     uploading: false,
-    typeImage: "image",
-    key:value, 
-    objectUrl: fileUrl,
+    typeImage: fileTypeAccpted,
+    key: value,
+    objectUrl: value ? fileUrl : undefined,
   });
 
-  
-  async function UploadFile(file: File) {
-    setFileState((prev) => ({
-      ...prev,
-      uploading: true,
-      progress: 0,
-    }));
-
-    const payload = {
-      fileName: file.name,
-      contentType: file.type,
-      size: file.size,
-      isImage: true,
-    };
-    try {
-      const presignedResponse = await axios.post("/api/S3/upload/", payload);
-
-      if (presignedResponse.status !== 200) {
-        toast.error("Failed to get presigned URL");
-        setFileState((prev) => ({
-          ...prev,
-          uploading: false,
-          progress: 0,
-          error: true,
-        }));
-        return;
-      }
-      const { presignedUrl, key } = presignedResponse.data;
-
-      const UploadResponse = await axios.put(presignedUrl, file, {
-        headers: { "Content-Type": file.type },
-        onUploadProgress: (event) => {
-          if (event.total) {
-            const percent = Math.round((event.loaded * 100) / event.total);
-            setFileState((prev) => ({ ...prev, progress: percent }));
-          }
-        },
-      });
-
-      if (UploadResponse.status == 200) {
-        setFileState((prev) => ({
-          ...prev,
-          uploading: false,
-          key,
-          progress: 100,
-        }));
-        onChange?.(key); 
-        toast.success("Upload réussi !");
-      }
-    } catch {
-      toast.error("Quelques choses s'est mal passé");
+  const UploadFile = useCallback(
+    async (file: File) => {
       setFileState((prev) => ({
         ...prev,
-        uploading: false,
-        error: true,
+        uploading: true,
         progress: 0,
       }));
-    }
-  }
+
+      const payload = {
+        fileName: file.name,
+        contentType: file.type,
+        size: file.size,
+        isImage: fileTypeAccpted === "image" ? true : false,
+      };
+      try {
+        const presignedResponse = await axios.post("/api/S3/upload/", payload);
+
+        if (presignedResponse.status !== 200) {
+          toast.error("Failed to get presigned URL");
+          setFileState((prev) => ({
+            ...prev,
+            uploading: false,
+            progress: 0,
+            error: true,
+          }));
+          return;
+        }
+        const { presignedUrl, key } = presignedResponse.data;
+
+        const UploadResponse = await axios.put(presignedUrl, file, {
+          headers: { "Content-Type": file.type },
+          onUploadProgress: (event) => {
+            if (event.total) {
+              const percent = Math.round((event.loaded * 100) / event.total);
+              setFileState((prev) => ({ ...prev, progress: percent }));
+            }
+          },
+        });
+
+        if (UploadResponse.status == 200) {
+          setFileState((prev) => ({
+            ...prev,
+            uploading: false,
+            key,
+            progress: 100,
+          }));
+          onChange?.(key);
+          toast.success("Upload réussi !");
+        }
+      } catch {
+        toast.error("Quelques choses s'est mal passé");
+        setFileState((prev) => ({
+          ...prev,
+          uploading: false,
+          error: true,
+          progress: 0,
+        }));
+      }
+    },
+    [fileTypeAccpted, onChange],
+  );
 
   async function handleRemoveFile() {
     if (fileState.isDeleting && !fileState.objectUrl) return;
@@ -125,7 +132,7 @@ export default function Uploader({onChange , value} : iAppProps) {
       if (fileState.objectUrl && !fileState.objectUrl.startsWith("http")) {
         URL.revokeObjectURL(fileState.objectUrl);
       }
-      onChange?.("")
+      onChange?.(undefined as any);
       setFileState(() => ({
         error: false,
         id: null,
@@ -133,7 +140,7 @@ export default function Uploader({onChange , value} : iAppProps) {
         progress: 0,
         isDeleting: false,
         uploading: false,
-        typeImage: "image",
+        typeImage: fileTypeAccpted,
         objectUrl: undefined,
       }));
       toast.success("Fichier supprimer avec succès");
@@ -162,46 +169,51 @@ export default function Uploader({onChange , value} : iAppProps) {
           progress: 0,
           isDeleting: false,
           uploading: false,
-          typeImage: "image",
+          typeImage: fileTypeAccpted,
           objectUrl: URL.createObjectURL(file),
-          
         });
 
         UploadFile(file);
       }
     },
-    [fileState.objectUrl]
+    [fileState.objectUrl, fileTypeAccpted, UploadFile],
   );
 
   function rejectedFiles(fileRejection: FileRejection[]) {
     if (fileRejection.length) {
       const tooManyFiles = fileRejection.find(
-        (rejection) => rejection.errors[0].code === "too-many-files"
+        (rejection) => rejection.errors[0].code === "too-many-files",
       );
 
-      const fileSizeBig = fileRejection.find(
-        (rejection) => rejection.errors[0].code === "file-too-large"
+      const tooLarge = fileRejection.find(
+        (r) => r.errors[0].code === "file-too-large",
       );
 
-      if (fileSizeBig) {
-        toast.error("Fichier trop grand la taille maximal est de 5mb");
+      if (tooLarge) {
+        const maxSize = fileTypeAccpted === "video" ? "200 MB" : "5 MB";
+
+        toast.error(
+          `Fichier trop grand. Taille maximale autorisée : ${maxSize}`,
+        );
       }
       if (tooManyFiles) {
         toast.error(
-          "Plusieurs fichier selectionner le nombre maximun est de <strong>1</strong>"
+          "Plusieurs fichier selectionner le nombre maximun est de <strong>1</strong>",
         );
       }
     }
   }
 
+  const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 MB
+  const MAX_VIDEO_SIZE = 200 * 1024 * 1024; // 200 MB
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: { "image/*": [] },
+    accept: fileTypeAccpted === "video" ? { "video/*": [] } : { "image/*": [] },
     maxFiles: 1,
-    maxSize: 5 * 1024 * 1024,
+    maxSize: fileTypeAccpted === "video" ? MAX_VIDEO_SIZE : MAX_IMAGE_SIZE,
     multiple: false,
     onDropRejected: rejectedFiles,
-    disabled : fileState.uploading || !!fileState.objectUrl , 
+    disabled: fileState.uploading || !!fileState.objectUrl,
   });
 
   function renderContent() {
@@ -217,7 +229,14 @@ export default function Uploader({onChange , value} : iAppProps) {
       return <RenderErrorState />;
     }
     if (fileState.objectUrl) {
-      return <RenderUploadedState previewUrl={fileState.objectUrl} handleRemoveFile={handleRemoveFile} isDeleting={fileState.isDeleting}/>;
+      return (
+        <RenderUploadedState
+          previewUrl={fileState.objectUrl}
+          handleRemoveFile={handleRemoveFile}
+          isDeleting={fileState.isDeleting}
+          fileType={fileState.typeImage}
+        />
+      );
     }
     return <RenderState isDragActive={isDragActive} />;
   }
@@ -237,7 +256,7 @@ export default function Uploader({onChange , value} : iAppProps) {
         "relative border-2 border-dashed tansition-color duration-200 ease-in-out w-full h-64",
         isDragActive
           ? "border-primary bg-primary/30 border-solid"
-          : "border-border hover:border-primary"
+          : "border-border hover:border-primary",
       )}
     >
       <CardContent className="flex items-center justify-center w-full h-full p-4">

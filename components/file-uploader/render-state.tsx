@@ -15,7 +15,7 @@ export default function RenderState({
         <CloudUploadIcon
           className={cn(
             "text-muted-foreground size-6",
-            isDragActive && "text-primary"
+            isDragActive && "text-primary",
           )}
         />
       </div>
@@ -53,20 +53,27 @@ export function RenderUploadedState({
   previewUrl,
   handleRemoveFile,
   isDeleting,
+  fileType,
 }: {
   previewUrl: string;
   handleRemoveFile: () => void;
   isDeleting: boolean;
+  fileType: "image" | "video";
 }) {
   return (
-    <div>
-      <Image
-        src={previewUrl}
-        alt="Upload file"
-        fill
-        className="object-contain p-2"
-        unoptimized={true}
-      />
+    <div className="relative group flex items-center justify-center w-full h-full ">
+      {fileType === "video" ? (
+        <video src={previewUrl} controls className="rounded-md w-full h-full" />
+      ) : (
+        <Image
+          src={previewUrl}
+          alt="Upload file"
+          fill
+          className="object-contain p-2"
+          unoptimized={true}
+        />
+      )}
+
       <Button
         variant={"destructive"}
         size={"icon"}

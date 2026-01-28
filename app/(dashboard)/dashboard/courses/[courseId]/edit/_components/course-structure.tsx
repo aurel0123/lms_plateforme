@@ -342,7 +342,7 @@ export default function CourseStructure({ data }: CourseStructureProps) {
                                       </Button>
                                       <FileText className="size-4" />
                                       <Link
-                                        href={`/dashboard/course/${data.id}/${item.id}/${lesson.id}`}
+                                        href={`/dashboard/courses/${data.id}/${item.id}/${lesson.id}`}
                                         className="hover:text-primary"
                                       >
                                         {lesson.title}

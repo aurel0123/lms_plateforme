@@ -71,14 +71,14 @@ export default function RichTextEditor({field} : {field : any }) {
     ],
     editorProps: {
       attributes: {
-        class : 'min-h-[250px] focus:outline-none p-4 prose prose-sm sm:prose lg:prose-lg xl:prose-xl dark:prose-invert !w-full !max-w-none'
+        class : 'min-h-[250px] focus:outline-none p-4 prose prose-sm sm:prose lg:prose-sm xl:prose-sm dark:prose-invert !w-full !max-w-none'
       },
     },
 
     onUpdate : ({editor}) => {
       field.onChange(JSON.stringify(editor.getJSON())) ; 
     },
-    content : field.value ? JSON.parse(field.value) : '<p>Hello world </p>'
+    content : field.value ? JSON.parse(field.value) : ''
   })
 
   return (

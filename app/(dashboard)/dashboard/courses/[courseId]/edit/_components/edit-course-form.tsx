@@ -72,7 +72,7 @@ export default function EditCourseForm({data}: EditCourseFormProps) {
       if (result.status === "success") {
         toast.success(result.message);
         form.reset();
-        router.push("/admin/courses/");
+        router.push("/dashboard/courses/");
       } else if (result.status === "error") {
         toast.error(result.message);
       }
