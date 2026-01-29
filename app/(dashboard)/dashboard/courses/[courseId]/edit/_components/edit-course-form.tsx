@@ -114,7 +114,7 @@ export default function EditCourseForm({data}: EditCourseFormProps) {
             className="w-fit "
             onClick={() => {
               const titleValue = form.getValues("title");
-              const slug = slugify(titleValue);
+              const slug = slugify(titleValue , {lower:true , strict : true , trim:true});
               form.setValue("slug", slug, { shouldValidate: true });
             }}
           >

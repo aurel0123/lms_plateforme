@@ -1,80 +1,40 @@
-import { AdminCoursesType } from "@/app/data/admin/admin-get-courses";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { PublicCourseType } from "@/app/data/course/get-all-courses";
+import { Badge } from "@/components/ui/badge";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useContruct } from "@/hooks/use-contruct";
-import {
-  ArrowRight,
-  Eye,
-  MoreVertical,
-  Pencil,
-  School,
-  TimerIcon,
-  Trash2,
-} from "lucide-react";
+import { School, TimerIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Skeleton } from "@/components/ui/skeleton";
+import React from "react";
 
-interface iAppCourseProps {
-  data: AdminCoursesType;
+interface iAppProps {
+  data: PublicCourseType;
 }
-
-export default function AdminCourseCard({ data }: iAppCourseProps) {
-  const thmbnaileUrl = useContruct(data.fileKey);
+export default function PublicCourseCard({ data }: iAppProps) {
+  const thumbnailUrl = useContruct(data.fileKey);
   return (
-    <Card className="group relative py-0 gap-0">
-      <div className="absolute top-2 right-2 z-10">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="secondary" size="icon">
-              <MoreVertical className="size-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuItem asChild>
-              <Link href={`/dashboard/courses/${data.id}/edit`}>
-                <Pencil className="size-4 mr-2" />
-                Modifier le cour
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href={`/courses/${data.slug}/`}>
-                <Eye className="size-4 mr-2" />
-                Prévisualiser
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link href={`/dashboard/courses/${data.id}/delete`}>
-                <Trash2 className="size-4 mr-2 text-destructive" />
-                Supprimer
-              </Link>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+    <Card className="relative group py-0 gap-0">
+      <Badge className="absolute top-2 right-2 z-10 rounded">
+        {data.level}
+      </Badge>
+
       <Image
-        src={thmbnaileUrl}
-        alt="minuature"
+        src={thumbnailUrl}
+        alt="Thumbnail image"
         width={600}
         height={400}
-        className="w-full rounded-t-lg aspect-video h-full object-cover"
+        className="w-full h-full object-cover rounded-t-xl aspect-video"
       />
+
       <CardContent className="p-4">
         <Link
-          href={`/dashboard/courses/${data.id}`}
+          href={`/explore-courses/${data.slug}`}
           className="text-lg font-medium line-clamp-2 hover:underline group-hover:text-primary transition-colors"
         >
           {data.title}
         </Link>
-
         <p className="text-sm text-muted-foreground mt-2 line-clamp-2 leading-tight">
           {data.smalldescription}
         </p>
@@ -90,24 +50,25 @@ export default function AdminCourseCard({ data }: iAppCourseProps) {
           </div>
         </div>
 
-        <Link
-          href={`/dashboard/courses/${data.id}/edit`}
+         <Link
+          href={`/explore-courses/${data.slug}/`}
           className={buttonVariants({
             className: "w-full mt-4",
           })}
         >
-          Modifier le cour <ArrowRight className=" size-4 ml-2" />
+          En savoir plus
         </Link>
       </CardContent>
     </Card>
   );
 }
 
-export function AdminCourseCardSkelton() {
+
+export function PublicCourseSkeleton() {
   return (
     <Card className="group relative py-0 gap-0">
       <div className="absolute top-2 right-2 z-10 flex items-center gap-2">
-        <Skeleton className="size-8 rounded-md" />
+        <Skeleton className="h-8 w-20 rounded-md" />
       </div>
 
       <div className="relative w-full h-fit">

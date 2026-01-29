@@ -4,11 +4,7 @@ import Link from "next/link";
 import AdminCourseCard, { AdminCourseCardSkelton } from "./_components/admin-course-card";
 import EmptyState from "@/components/general/EmptyState";
 import { Suspense } from "react";
-import { Card } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-
 export default async function Page() {
-  const data = await adminGetCourses();
   return (
     <>
       <div className="flex items-center justify-between">
