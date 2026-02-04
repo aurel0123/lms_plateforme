@@ -4,17 +4,11 @@ import { prisma } from "@/lib/db";
 import { courseSchema, courseSchemaType } from "@/lib/zodSchema";
 import { ApiResponse } from "@/lib/type";
 import { RequireAdmin } from "@/app/data/admin/require-admin";
-import arcjet, { detectBot, fixedWindow } from '@/lib/arcjet';
+import arcjet, { fixedWindow } from '@/lib/arcjet';
 import { request } from "@arcjet/next";
 
 
 const aj = arcjet
-    .withRule(
-        detectBot({
-            mode: "LIVE", // will block requests. Use "DRY_RUN" to log only
-            allow: [], // "allow none" will block all detected bots
-        }),
-    )
     .withRule(
         fixedWindow({
             mode : "LIVE",

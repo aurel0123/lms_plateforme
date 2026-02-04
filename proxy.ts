@@ -1,15 +1,13 @@
+import arcjet, { createMiddleware, detectBot } from "@arcjet/next";
+import { env } from "./lib/env";
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "./lib/auth";
 import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
 
-export async function proxy(request: NextRequest) {
+export async function AuthProxy(request: NextRequest) {
     const session = await auth.api.getSession({
         headers: await headers()
     })
-
-    // THIS IS NOT SECURE!
-    // This is the recommended approach to optimistically redirect users
-    // We recommend handling auth checks in each page/route
     if(!session) {
         return NextResponse.redirect(new URL("/login", request.url));
     }
@@ -18,5 +16,26 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*"], // Specify the routes the middleware applies to
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|api/auth).*)"],
 };
+
+const aj = arcjet({
+  key: env.ARCJET_KEY!,
+  rules: [
+    detectBot({
+      mode: "LIVE",
+      allow: [
+        "CATEGORY:SEARCH_ENGINE", 
+        "CATEGORY:MONITOR", // Uptime monitoring services
+        "CATEGORY:PREVIEW", // Link previews e.g. Slack, Discord
+      ],
+    }),
+  ],
+});
+export default createMiddleware(aj , async (request :  NextRequest ) => {
+    if(request.nextUrl.pathname.startsWith("/dashboard")){
+        return AuthProxy(request)
+    }
+
+    return NextResponse.next(); 
+});

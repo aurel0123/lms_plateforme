@@ -14,7 +14,7 @@ const navigationItems = [
         name : 'Home' , href : "/"
     },
     {
-        name : 'Cours' , href : "/courses"
+        name : 'Cours' , href : "/explore-courses"
     },
     {
         name : 'Dashboard' , href : "/dashboard"

@@ -1,7 +1,7 @@
 import { getIndividualCourse } from "@/app/data/course/get-course";
+import { CheckifCourseBought } from "@/app/data/user/user-is-enrolled";
 import RenderDescription from "@/components/general/render-description";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Collapsible,
@@ -10,13 +10,26 @@ import {
 } from "@/components/ui/collapsible";
 import { Separator } from "@/components/ui/separator";
 import { env } from "@/lib/env";
-import { Blocks, Book, ChartBar, ChartBarBig, Check, ChevronDown, Clock, LayoutGrid, Play } from "lucide-react";
+import {
+  Blocks,
+  Book,
+  ChartBar,
+  ChartBarBig,
+  Check,
+  ChevronDown,
+  Clock,
+  LayoutGrid,
+  Play,
+} from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+import EnrollmentButton from "./_component/enrollmentbutton";
 
 type Params = Promise<{ slug: string }>;
 export default async function PageSlug({ params }: { params: Params }) {
   const { slug } = await params;
   const course = await getIndividualCourse(slug);
+  const isEnrolled = await CheckifCourseBought(course.id)
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-5">
       <div className="order-1 lg:col-span-2">
@@ -188,7 +201,7 @@ export default async function PageSlug({ params }: { params: Params }) {
                     <div>
                       <p className="font-medium text-sm">Niveau</p>
                       <p className="text-muted-foreground text-xs">
-                        {course.level} 
+                        {course.level}
                       </p>
                     </div>
                   </div>
@@ -201,7 +214,7 @@ export default async function PageSlug({ params }: { params: Params }) {
                     <div>
                       <p className="font-medium text-sm">Categorie</p>
                       <p className="text-muted-foreground text-xs">
-                        {course.category} 
+                        {course.category}
                       </p>
                     </div>
                   </div>
@@ -214,7 +227,11 @@ export default async function PageSlug({ params }: { params: Params }) {
                     <div>
                       <p className="font-medium text-sm">Total Leçons</p>
                       <p className="text-muted-foreground text-xs">
-                        {course.chapters.reduce((total, chapter) => total + chapter.lessons.length, 0)} Leçons
+                        {course.chapters.reduce(
+                          (total, chapter) => total + chapter.lessons.length,
+                          0,
+                        )}{" "}
+                        Leçons
                       </p>
                     </div>
                   </div>
@@ -222,40 +239,42 @@ export default async function PageSlug({ params }: { params: Params }) {
               </div>
 
               <div className="mb-3 space-y-3">
-                 <h4>
-                    Ce cour incluis : 
-                 </h4>
-                 <ul className="space-y-2">
-                    <li className="flex items-center gap-2 text-sm">
-                        <div className="rounded-full p-1 bg-green-500/20 text-green-500">
-                            <Check className="size-3"/>
-                        </div>
-                        <span>
-                            Accès à vie 
-                        </span>
-                    </li>
-                    <li className="flex items-center gap-2 text-sm">
-                        <div className="rounded-full p-1 bg-green-500/20 text-green-500">
-                            <Check className="size-3"/>
-                        </div>
-                        <span>
-                            Accès sur pc et téléphone 
-                        </span>
-                    </li>
-                    <li className="flex items-center gap-2 text-sm">
-                        <div className="rounded-full p-1 bg-green-500/20 text-green-500">
-                            <Check className="size-3"/>
-                        </div>
-                        <span>
-                            Une attestation
-                        </span>
-                    </li>
-                 </ul>
+                <h4>Ce cour incluis :</h4>
+                <ul className="space-y-2">
+                  <li className="flex items-center gap-2 text-sm">
+                    <div className="rounded-full p-1 bg-green-500/20 text-green-500">
+                      <Check className="size-3" />
+                    </div>
+                    <span>Accès à vie</span>
+                  </li>
+                  <li className="flex items-center gap-2 text-sm">
+                    <div className="rounded-full p-1 bg-green-500/20 text-green-500">
+                      <Check className="size-3" />
+                    </div>
+                    <span>Accès sur pc et téléphone</span>
+                  </li>
+                  <li className="flex items-center gap-2 text-sm">
+                    <div className="rounded-full p-1 bg-green-500/20 text-green-500">
+                      <Check className="size-3" />
+                    </div>
+                    <span>Une attestation</span>
+                  </li>
+                </ul>
               </div>
-              <Button className="w-full">
-                Inscrivez-vous maintenant
-              </Button>
-              <p className="text-xs text-muted-foreground text-center mt-2">30 jour de garantie</p>
+              {
+                isEnrolled ? (
+                  <Link href="/dashboard/course">
+                    Regarder le cour
+                  </Link>
+                ) : (
+                  <EnrollmentButton courseId={course.id}/>
+                )
+              }
+              
+
+              <p className="text-xs text-muted-foreground text-center mt-2">
+                30 jour de garantie
+              </p>
             </CardContent>
           </Card>
         </div>
