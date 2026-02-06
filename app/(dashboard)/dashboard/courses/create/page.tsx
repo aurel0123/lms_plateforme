@@ -156,7 +156,7 @@ export default function CourseCreationPage() {
                     <FormLabel>Description courte</FormLabel>
                     <FormControl>
                        <Textarea
-                        className="min-h-[120px]"
+                        className="min-h-30"
                         placeholder="description courte..."
                         {...field}
                       /> 

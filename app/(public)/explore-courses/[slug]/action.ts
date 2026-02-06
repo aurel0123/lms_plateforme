@@ -38,6 +38,7 @@ export async function enrollInCourseAction(
         title: true,
         slug: true,
         price: true,
+        stripePriceId: true,
       },
     });
 
@@ -50,13 +51,13 @@ export async function enrollInCourseAction(
     const userWithStripeCustomId = await prisma.user.findUnique({
       where: { id: user.id },
       select: {
-        stripCustomId: true,
+        stripCustomerId: true,
       },
     });
 
     let stripeCustomId: string;
-    if (userWithStripeCustomId?.stripCustomId) {
-      stripeCustomId = userWithStripeCustomId.stripCustomId;
+    if (userWithStripeCustomId?.stripCustomerId) {
+      stripeCustomId = userWithStripeCustomId.stripCustomerId;
     } else {
       const customer = await stripe.customers.create({
         email: user.email,
@@ -71,7 +72,7 @@ export async function enrollInCourseAction(
       await prisma.user.update({
         where: { id: user.id },
         data: {
-          stripCustomId: stripeCustomId,
+          stripCustomerId: stripeCustomId,
         },
       });
     }
@@ -124,7 +125,7 @@ export async function enrollInCourseAction(
         customer: stripeCustomId,
         line_items: [
           {
-            price: "price_1Sx3HJ2Ufiq2N6bxS0pJ11rv",
+            price: course.stripePriceId as string,
             quantity: 1,
           },
         ],

@@ -6,6 +6,7 @@ import { ApiResponse } from "@/lib/type";
 import { RequireAdmin } from "@/app/data/admin/require-admin";
 import arcjet, { fixedWindow } from '@/lib/arcjet';
 import { request } from "@arcjet/next";
+import { stripe } from "@/lib/stripe";
 
 
 const aj = arcjet
@@ -53,10 +54,19 @@ export async function CreateCourse(values: courseSchemaType ) : Promise<ApiRespo
                 message : "Forme de donnée invalide"
             }
         }
-        const data = await prisma.course.create({
+        const data = await stripe.products.create({
+            name : validation.data.title,
+            description : validation.data.smalldescription,
+            default_price_data : {
+                currency : "usd",
+                unit_amount : validation.data.price * 100
+            }
+        })
+        await prisma.course.create({
             data : {
                 ...validation.data,
                 authorId: session.user.id,
+                stripePriceId : data.default_price as string
             },
         });
         return  {

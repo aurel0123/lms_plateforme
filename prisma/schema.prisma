@@ -21,7 +21,7 @@ model User {
   accounts      Account[]
   courses       Course[]
   enrollment    Enrollment[]
-  stripCustomId String?  @unique
+  stripCustomerId String?  @unique
 
   role       String?
   banned     Boolean?  @default(false)
@@ -88,6 +88,8 @@ model Course {
   price       Int
   duration    Int
   level       CourseLevel @default(Beginner)
+
+  stripePriceId String? @unique 
 
   category         String
   smalldescription String

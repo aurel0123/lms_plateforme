@@ -24,6 +24,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import EnrollmentButton from "./_component/enrollmentbutton";
+import { buttonVariants } from "@/components/ui/button";
 
 type Params = Promise<{ slug: string }>;
 export default async function PageSlug({ params }: { params: Params }) {
@@ -263,8 +264,8 @@ export default async function PageSlug({ params }: { params: Params }) {
               </div>
               {
                 isEnrolled ? (
-                  <Link href="/dashboard/course">
-                    Regarder le cour
+                  <Link href="/dashboard/courses" className={buttonVariants({className: "w-full"})}>
+                    Démarrer le cour
                   </Link>
                 ) : (
                   <EnrollmentButton courseId={course.id}/>
