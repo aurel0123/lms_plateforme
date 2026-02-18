@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
 import { FileRejection, useDropzone } from "react-dropzone";
@@ -154,7 +155,6 @@ export default function Uploader({
     }
   }
   const onDrop = useCallback(
-    // eslint-disable-next-line react-hooks/preserve-manual-memoization
     (acceptedFiles: File[]) => {
       if (acceptedFiles.length > 0) {
         const file = acceptedFiles[0];

@@ -11,7 +11,7 @@ export default function PageSuccess() {
 
     useEffect(() => {
         triggerConfetti()
-    } , [])
+    } , [triggerConfetti])
   return (
     <div className="min-h-screen flex items-center justify-center">
       <Card className="max-w-md w-full">

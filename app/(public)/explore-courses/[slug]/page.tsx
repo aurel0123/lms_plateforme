@@ -264,7 +264,7 @@ export default async function PageSlug({ params }: { params: Params }) {
               </div>
               {
                 isEnrolled ? (
-                  <Link href="/dashboard/courses" className={buttonVariants({className: "w-full"})}>
+                  <Link href={`/customer/${slug}/course`} className={buttonVariants({className: "w-full"})}>
                     Démarrer le cour
                   </Link>
                 ) : (

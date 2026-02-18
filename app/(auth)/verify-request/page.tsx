@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useTransition } from "react";
+import React, { useState, useTransition, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,18 +19,19 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
-export default function VerifyRequest() {
+function VerifyRequestContent() {
   const router = useRouter();
   const [otp, setOtp] = useState("");
   const [otpPending, startTransition] = useTransition();
   const params = useSearchParams();
   const email = params.get("email") as string;
   const isOtpCompleted = otp.length === 6;
+
   function verifyOtp() {
     startTransition(async () => {
       await authClient.signIn.emailOtp({
-        email: email, // required
-        otp: otp, // required
+        email: email,
+        otp: otp,
         fetchOptions: {
           onSuccess: () => {
             toast.success("Email verified");
@@ -43,6 +44,7 @@ export default function VerifyRequest() {
       });
     });
   }
+
   return (
     <Card>
       <CardHeader className="text-center">
@@ -81,18 +83,32 @@ export default function VerifyRequest() {
           disabled={otpPending || !isOtpCompleted}
           onClick={verifyOtp}
         >
-            {
-                otpPending ? (
-                    <>
-                        <Loader2 className="size-4 animate-spin"/>
-                        <span>Loading...</span>
-                    </>
-                ) : (
-                    "Verify Account"
-                )
-            }
+          {otpPending ? (
+            <>
+              <Loader2 className="size-4 animate-spin" />
+              <span>Loading...</span>
+            </>
+          ) : (
+            "Verify Account"
+          )}
         </Button>
       </CardContent>
     </Card>
+  );
+}
+
+export default function VerifyRequest() {
+  return (
+    <Suspense
+      fallback={
+        <Card>
+          <CardContent className="flex items-center justify-center py-10">
+            <Loader2 className="size-6 animate-spin text-muted-foreground" />
+          </CardContent>
+        </Card>
+      }
+    >
+      <VerifyRequestContent />
+    </Suspense>
   );
 }

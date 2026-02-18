@@ -229,11 +229,10 @@ export async function createLesson(
       };
     }
 
-    //Transaction iteractive les requetes depends les uns des autres
     await prisma.$transaction(async (tx) => {
       const maxPos = await tx.lesson.findFirst({
         where: {
-          chapterId: validate.data.courseId,
+          chapterId: validate.data.chapterId, // ✅ corrigé : chapterId au lieu de courseId
         },
         select: {
           position: true,
@@ -254,10 +253,11 @@ export async function createLesson(
         },
       });
     });
+
     revalidatePath(`/dashboard/courses/${validate.data.courseId}/edit`);
     return {
       status: "success",
-      message: "lesson créer avec succès",
+      message: "Lesson créée avec succès",
     };
   } catch {
     return {

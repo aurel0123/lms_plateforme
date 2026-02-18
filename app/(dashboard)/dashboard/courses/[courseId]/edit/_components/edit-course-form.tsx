@@ -5,6 +5,7 @@ import {
   courseCategory,
   courseLevel,
   courseSchema,
+  courseSchemaInputType,
   courseSchemaType,
   courseStatus,
 } from "@/lib/zodSchema";
@@ -37,32 +38,33 @@ import { useTransition } from "react";
 import { editCourse } from "../actions";
 import { AdminCourseSingularType } from "@/app/data/admin/admin-get-course";
 
-
 interface EditCourseFormProps {
-  data : AdminCourseSingularType;
+  data: AdminCourseSingularType;
 }
-export default function EditCourseForm({data}: EditCourseFormProps) {
+export default function EditCourseForm({ data }: EditCourseFormProps) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
-  const form = useForm<courseSchemaType>({
-    resolver: zodResolver(courseSchema),
-    defaultValues: {
-      title: data.title,
-      description: data.description,
-      fileKey: data.fileKey,
-      price: data.price,
-      duration: data.duration,
-      level: data.level,
-      category: data.category,
-      smalldescription: data.smalldescription,
-      slug: data.slug,
-      status: data.status,
-    },
-  });
+  const form = useForm<courseSchemaInputType, unknown, courseSchemaType>({
+  resolver: zodResolver(courseSchema),
+  defaultValues: {
+    title: data.title,
+    description: data.description,
+    fileKey: data.fileKey,
+    price: Number(data.price ?? 0),
+    duration: Number(data.duration ?? 0),
+    level: data.level as courseSchemaType["level"],
+    category: data.category as courseSchemaType["category"],
+    smalldescription: data.smalldescription,
+    slug: data.slug,
+    status: data.status as courseSchemaType["status"],
+  },
+});
 
   function onSubmit(values: courseSchemaType) {
     startTransition(async () => {
-      const { data: result, error } = await tryCatch(editCourse(values , data.id));
+      const { data: result, error } = await tryCatch(
+        editCourse(values, data.id),
+      );
 
       if (error) {
         toast.error("Please try again");
@@ -114,7 +116,11 @@ export default function EditCourseForm({data}: EditCourseFormProps) {
             className="w-fit "
             onClick={() => {
               const titleValue = form.getValues("title");
-              const slug = slugify(titleValue , {lower:true , strict : true , trim:true});
+              const slug = slugify(titleValue, {
+                lower: true,
+                strict: true,
+                trim: true,
+              });
               form.setValue("slug", slug, { shouldValidate: true });
             }}
           >
@@ -130,7 +136,7 @@ export default function EditCourseForm({data}: EditCourseFormProps) {
               <FormLabel>Description courte</FormLabel>
               <FormControl>
                 <Textarea
-                  className="min-h-[120px]"
+                  className="min-h-30"
                   placeholder="description courte..."
                   {...field}
                 />

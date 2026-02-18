@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { getAllCourses } from '@/app/data/course/get-all-courses'
 import React, { Suspense } from 'react'
 import PublicCourseCard, { PublicCourseSkeleton } from '../_components/public-course-card';

@@ -14,6 +14,7 @@ import {
   courseCategory,
   courseLevel,
   courseSchema,
+  courseSchemaInputType,
   courseSchemaType,
   courseStatus,
 } from "@/lib/zodSchema";
@@ -44,22 +45,23 @@ import { tryCatch } from "@/lib/tryCatch";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useConfetti } from "@/hooks/useConfetti";
+
 export default function CourseCreationPage() {
-  const form = useForm<courseSchemaType>({
-    resolver: zodResolver(courseSchema),
-    defaultValues: {
-      title: "",
-      description: "",
-      fileKey: "",
-      price: 0,
-      duration: 0,
-      level: "Beginner",
-      category: "Développement personnel",
-      smalldescription: "",
-      slug: "",
-      status: "Draft",
-    },
-  });
+  const form = useForm<courseSchemaInputType, unknown, courseSchemaType>({
+  resolver: zodResolver(courseSchema),
+  defaultValues: {
+    title: "",
+    description: "",
+    fileKey: "",
+    price: 0,
+    duration: 0,
+    level: "Beginner",
+    category: "Développement personnel",
+    smalldescription: "",
+    slug: "",
+    status: "Draft",
+  },
+});
 
   const [isPending , startTransition] = useTransition(); 
   const router = useRouter(); 

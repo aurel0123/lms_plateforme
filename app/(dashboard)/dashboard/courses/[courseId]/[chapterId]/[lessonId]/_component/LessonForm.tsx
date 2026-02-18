@@ -75,7 +75,7 @@ export default function LessonForm({ data, chapterId, courseId }: AppProps) {
 
       <Card>
         <CardHeader>
-          <CardTitle>Configuration d'une lesson</CardTitle>
+          <CardTitle>Configuration d&apos;une lesson</CardTitle>
           <CardDescription>
             Ajouter une video et une description
           </CardDescription>

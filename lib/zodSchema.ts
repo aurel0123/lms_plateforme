@@ -1,16 +1,8 @@
-import {z} from 'zod'
+import { z } from "zod";
 
-export const courseLevel = [
-    "Beginner",
-    "Intermediate", 
-    "Advanced"
-] as const
+export const courseLevel = ["Beginner", "Intermediate", "Advanced"] as const;
 
-export const courseStatus = [
-    "Draft", 
-    "Published",
-    "Archive"
-] as const
+export const courseStatus = ["Draft", "Published", "Archive"] as const;
 
 export const courseCategory = [
   "Développement personnel",
@@ -28,7 +20,7 @@ export const courseCategory = [
   "Leadership et management",
   "Intelligence artificielle",
   "Design graphique et UX/UI",
-  "Entrepreneuriat et startups"
+  "Entrepreneuriat et startups",
 ] as const;
 
 export const courseSchema = z.object({
@@ -39,69 +31,87 @@ export const courseSchema = z.object({
 
   description: z
     .string()
-    .min(3, { message: "La description doit être plus détaillée (minimum 3 caractères)." }),
+    .min(3, {
+      message:
+        "La description doit être plus détaillée (minimum 3 caractères).",
+    }),
 
-  fileKey: z
-    .string()
-    .min(1, { message: "Le fichier est obligatoire." }),
+  fileKey: z.string().min(1, { message: "Le fichier est obligatoire." }),
 
   price: z
-    .coerce.number()
-    .min(1, { message: "Le prix doit être supérieur à 0." }),
+    .union([z.string(), z.number()])
+    .transform((val) => Number(val))
+    .pipe(z.number().min(1, { message: "Le prix doit être supérieur à 0." })),
 
   duration: z
-    .coerce.number()
-    .min(1, { message: "La durée doit être d’au moins 1 minute." })
-    .max(500, { message: "La durée ne peut pas dépasser 500 minutes." }),
+    .union([z.string(), z.number()])
+    .transform((val) => Number(val))
+    .pipe(
+      z
+        .number()
+        .min(1, { message: "La durée doit être d'au moins 1 minute." })
+        .max(500, { message: "La durée ne peut pas dépasser 500 minutes." }),
+    ),
 
   level: z.enum(courseLevel, {
-    message: "Veuillez sélectionner un niveau valide."
+    message: "Veuillez sélectionner un niveau valide.",
   }),
 
-  category: z
-    .enum(courseCategory , {message: "La categorie est requise"}),
+  category: z.enum(courseCategory, { message: "La categorie est requise" }),
 
   smalldescription: z
     .string()
-    .min(3, { message: "La courte description doit contenir au moins 3 caractères." })
-    .max(1000, { message: "La courte description ne peut pas dépasser 200 caractères." }),
+    .min(3, {
+      message: "La courte description doit contenir au moins 3 caractères.",
+    })
+    .max(1000, {
+      message: "La courte description ne peut pas dépasser 200 caractères.",
+    }),
 
   slug: z
     .string()
     .min(3, { message: "Le slug doit contenir au moins 3 caractères." }),
 
   status: z.enum(courseStatus, {
-    message: "Veuillez sélectionner un statut valide."
-  })
+    message: "Veuillez sélectionner un statut valide.",
+  }),
 });
 
 export const chapterSchema = z.object({
   title: z
     .string()
-    .min(3, {message : "Le tritre du chapitre doit avoir au moins 03 carctères"}),
-  courseId : z.string({message : "Id du cour invalid"})
-})
+    .min(3, {
+      message: "Le tritre du chapitre doit avoir au moins 03 carctères",
+    }),
+  courseId: z.string({ message: "Id du cour invalid" }),
+});
 
 export const lessonSchema = z.object({
-  title : z
+  title: z
     .string()
-    .min(3, {message : "Le tritre du chapitre doit avoir au moins 03 carctères"}),
-  description : z
+    .min(3, {
+      message: "Le tritre du chapitre doit avoir au moins 03 carctères",
+    }),
+  description: z
     .string()
-    .min(3, { message: "La description doit être plus détaillée (minimum 3 caractères)." })
+    .min(3, {
+      message:
+        "La description doit être plus détaillée (minimum 3 caractères).",
+    })
     .optional(),
-  thumbnailkey : z
+  thumbnailkey: z
     .string()
     .min(1, { message: "Le fichier est obligatoire." })
     .optional(),
-  videoUrl : z
+  videoUrl: z
     .string()
     .min(1, { message: "Le fichier est obligatoire." })
     .optional(),
-  chapterId : z.string({message : "Id du chapitre invalid"}),
-  courseId : z.string({message : "id du cours invalid"})
-})
+  chapterId: z.string({ message: "Id du chapitre invalid" }),
+  courseId: z.string({ message: "id du cours invalid" }),
+});
 
-export type courseSchemaType = z.infer<typeof courseSchema>; 
-export type chapterSchemaType = z.infer<typeof chapterSchema>; 
+export type courseSchemaType = z.infer<typeof courseSchema>;
+export type chapterSchemaType = z.infer<typeof chapterSchema>;
 export type lessonSchemaType = z.infer<typeof lessonSchema>;
+export type courseSchemaInputType = z.input<typeof courseSchema>;  

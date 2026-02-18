@@ -7,7 +7,7 @@ import { useContruct } from "@/hooks/use-contruct";
 import { School, TimerIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React from "react"
 
 interface iAppProps {
   data: PublicCourseType;
@@ -21,7 +21,7 @@ export default function PublicCourseCard({ data }: iAppProps) {
       </Badge>
 
       <Image
-        src={thumbnailUrl}
+        src={thumbnailUrl ?? ""}
         alt="Thumbnail image"
         width={600}
         height={400}

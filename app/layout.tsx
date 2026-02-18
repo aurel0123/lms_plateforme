@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import {Geist_Mono  , Outfit, Sen} from "next/font/google";
+import { Geist_Mono, Outfit, Sen } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster } from "@/components/ui/sonner"
+import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const sen = Sen({
   variable: "--font-sen",
@@ -14,10 +15,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 const outfit = Outfit({
-  variable : "--font-outfit", 
-  subsets : ["latin"], 
-  weight : [ "100" , "200" , "300" , "400" , "500" , "600" , "700" , "800" , "900"]
-})
+  variable: "--font-outfit",
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -34,15 +35,17 @@ export default function RootLayout({
       <body
         className={`${sen.variable} ${geistMono.variable} ${outfit.variable} antialiased`}
       >
-        <ThemeProvider
+        <TooltipProvider>
+          <ThemeProvider
             attribute="class"
             defaultTheme="dark"
             enableSystem
             disableTransitionOnChange
           >
             {children}
-            <Toaster closeButton position="bottom-center"/>
+            <Toaster closeButton position="bottom-center" />
           </ThemeProvider>
+        </TooltipProvider>
       </body>
     </html>
   );

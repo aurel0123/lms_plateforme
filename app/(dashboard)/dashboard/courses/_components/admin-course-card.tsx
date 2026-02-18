@@ -61,7 +61,7 @@ export default function AdminCourseCard({ data }: iAppCourseProps) {
         </DropdownMenu>
       </div>
       <Image
-        src={thmbnaileUrl}
+        src={thmbnaileUrl ?? ""}
         alt="minuature"
         width={600}
         height={400}

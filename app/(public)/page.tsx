@@ -45,13 +45,13 @@ export default function Home() {
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight ">
             Améliorez votre Expérience d&apos;Apprentissage
           </h1>
-          <p className="md:text-xl max-w-[700px] text-muted-foreground">
+          <p className="md:text-xl max-w-175 text-muted-foreground">
             L’apprentissage interactif à portée de main ! Accédez à des cours de
             qualité, n’importe où et à tout moment.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 mt-8">
             <Link
-              href="/explore-course"
+              href="/explore-courses"
               className={buttonVariants({
                 size: "lg",
               })}

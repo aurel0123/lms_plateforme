@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react'
-import { EditorContent, EditorContext, useEditor } from '@tiptap/react'
+import { EditorContent, useEditor } from '@tiptap/react'
 import { MenuBar } from './menu-bar'
 import { StarterKit } from '@tiptap/starter-kit'
 import TextAlign from '@tiptap/extension-text-align'
@@ -46,7 +47,7 @@ export default function RichTextEditor({field} : {field : any }) {
             if (htmlContent) {
               // if there is htmlContent, stop manual insertion & let other extensions handle insertion via inputRule
               // you could extract the pasted file from this url string and upload it to a server for example
-              console.log(htmlContent) // eslint-disable-line no-console
+              console.log(htmlContent)
               return false
             }
 

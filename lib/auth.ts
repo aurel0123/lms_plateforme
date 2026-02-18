@@ -21,7 +21,7 @@ export const auth = betterAuth({
   plugins: [
     emailOTP({
       async sendVerificationOTP({ email, otp, type }) {
-        const { data, error } = await resend.emails.send({
+        await resend.emails.send({
           from: 'KammLMS <no-reply@foodplus.space>',
           to: [email],
           subject: 'KammLMS - Verify  your email',

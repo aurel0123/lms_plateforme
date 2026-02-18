@@ -1,4 +1,4 @@
-import { adminGetCourses } from "@/app/data/admin/admin-get-courses";
+import { AdminCoursesType, adminGetCourses } from "@/app/data/admin/admin-get-courses";
 import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 import AdminCourseCard, { AdminCourseCardSkelton } from "./_components/admin-course-card";
@@ -34,7 +34,7 @@ async function RenderState() {
         />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-6">
-          {data.map((course) => (
+          {data.map((course : AdminCoursesType) => (
             <AdminCourseCard key={course.id} data={course} />
           ))}
         </div>
