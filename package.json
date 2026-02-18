@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "db:migrate": "npx prisma migrate dev",
-    "db:studio": "npx prisma studio"
+    "db:studio": "npx prisma studio", 
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@arcjet/inspect": "^1.0.0-beta.15",
