@@ -1,10 +1,10 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { emailOTP } from "better-auth/plugins"
+import { emailOTP } from "better-auth/plugins";
 import { prisma } from "./db";
 import { env } from "./env";
 import { resend } from "./resend";
-import { admin } from "better-auth/plugins"
+import { admin } from "better-auth/plugins";
 
 // If your Prisma file is located elsewhere, you can change the path
 
@@ -18,17 +18,19 @@ export const auth = betterAuth({
       clientSecret: env.AUTH_GITHUB_CLIENT_SECRET,
     },
   },
+  baseURL: env.BETTER_AUTH_URL,
+  trustedOrigins: [env.BETTER_AUTH_URL ?? "http://localhost:3000"],
   plugins: [
     emailOTP({
       async sendVerificationOTP({ email, otp, type }) {
         await resend.emails.send({
-          from: 'KammLMS <no-reply@foodplus.space>',
+          from: "KammLMS <no-reply@foodplus.space>",
           to: [email],
-          subject: 'KammLMS - Verify  your email',
-          html : `<p>Your otp is <strong>${otp}</strong> for ${type}</p>`
+          subject: "KammLMS - Verify  your email",
+          html: `<p>Your otp is <strong>${otp}</strong> for ${type}</p>`,
         });
       },
     }),
-    admin()
+    admin(),
   ],
 });
